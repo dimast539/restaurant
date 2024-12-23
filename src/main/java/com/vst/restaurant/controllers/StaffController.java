@@ -20,8 +20,6 @@ public class StaffController {
     }
 
 
-
-
     @GetMapping("/test")
     public String test1() {
         return staffService != null ? "StaffService is initialized" : "StaffService is null";
@@ -41,25 +39,26 @@ public class StaffController {
     }
 
 
-
-
     @GetMapping("/{id}")
-    public Staff findById(@PathVariable int id){
+    public Staff findById(@PathVariable int id) {
         return staffService.findById(id);
     }
 
     @PutMapping("/update-staff/{id}")
-    public Staff updateStaff(@PathVariable int id,@RequestBody Staff updateStaff){
+    public Staff updateStaff(@PathVariable int id, @RequestBody Staff updateStaff) {
         return staffService.updateStaff(id, updateStaff);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable int id){
+    public void deleteById(@PathVariable int id) {
         staffService.deleteById(id);
     }
 
 
-
+    @GetMapping("/find-by-name/{name}")
+    public List<Staff> getStaffsByName(@PathVariable String name) {
+        return staffService.getStaffsByName(name);
+    }
 
 
 }

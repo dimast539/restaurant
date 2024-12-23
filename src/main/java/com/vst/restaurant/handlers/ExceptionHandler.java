@@ -1,5 +1,6 @@
 package com.vst.restaurant.handlers;
 
+import com.vst.restaurant.exceptions.RestaurantNotFoundException;
 import com.vst.restaurant.exceptions.StaffNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -15,5 +16,11 @@ public class ExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String StaffNotFoundException(StaffNotFoundException staffNotFoundException){
         return staffNotFoundException.getMessage();
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(RestaurantNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String RestaurantNotFoundException(RestaurantNotFoundException restaurantNotFoundException){
+        return restaurantNotFoundException.getMessage();
     }
 }

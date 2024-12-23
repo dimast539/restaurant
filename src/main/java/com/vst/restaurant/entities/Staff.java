@@ -2,10 +2,8 @@ package com.vst.restaurant.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
-//@Data
 @Table(name = "staff")
 public class Staff {
 
@@ -13,7 +11,7 @@ public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @JsonProperty("staff_name")
     @Column(name = "staff_name")
@@ -33,22 +31,22 @@ public class Staff {
 
     @JsonProperty("staff_salary")
     @Column(name = "staff_salary")
-    private double salary;
+    private Double salary;
 
     @JsonProperty("staff_address")
     @Column(name = "staff_address")
     private String homeAddress;
 
 
+    @JoinColumn(name = "restaurant_id")
+    @JsonProperty("restaurant")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Restaurant restaurant;
 
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+
+
 
     public String getStaffName() {
         return staffName;
@@ -82,11 +80,11 @@ public class Staff {
         this.post = post;
     }
 
-    public double getSalary() {
+    public Double getSalary() {
         return salary;
     }
 
-    public void setSalary(double salary) {
+    public void setSalary(Double salary) {
         this.salary = salary;
     }
 
@@ -96,5 +94,13 @@ public class Staff {
 
     public void setHomeAddress(String homeAddress) {
         this.homeAddress = homeAddress;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

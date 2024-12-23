@@ -1,7 +1,9 @@
 package com.vst.restaurant.services;
 
 import com.vst.restaurant.entities.Staff;
+import com.vst.restaurant.exceptions.RestaurantNotFoundException;
 import com.vst.restaurant.exceptions.StaffNotFoundException;
+import com.vst.restaurant.repositories.RestaurantRepository;
 import com.vst.restaurant.repositories.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,22 @@ import java.util.List;
 public class StaffService {
 
     private final StaffRepository staffRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Autowired
-    public StaffService(StaffRepository staffRepository) {
+    public StaffService(StaffRepository staffRepository, RestaurantRepository restaurantRepository) {
         this.staffRepository = staffRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
 
     public Staff save(Staff staff) {
+        if (staff.getRestaurant() != null && staff.getRestaurant().getId() != null) {
+            var rest = restaurantRepository.findById(staff.getRestaurant().getId()).orElseThrow(
+                    ()-> new RestaurantNotFoundException("Ресторан не найден"));
 
+            staff.setRestaurant(rest);
+        }
         return staffRepository.save(staff);
     }
 
@@ -32,7 +41,8 @@ public class StaffService {
 
     public Staff findById(int id) {
         return staffRepository.findById(id)
-                .orElseThrow(() -> new StaffNotFoundException("Данный сотрудник не найден"));
+                .orElseThrow(()
+                        -> new StaffNotFoundException("Данный сотрудник не найден"));
     }
 
     public Staff updateStaff(int id, Staff updatedStaff) {
@@ -53,18 +63,28 @@ public class StaffService {
         if (updatedStaff.getPost() != null) {
             existingStaff.setPost(updatedStaff.getPost());
         }
-        if (updatedStaff.getSalary() != 0) {
+        if (updatedStaff.getSalary() != null) {
             existingStaff.setSalary(updatedStaff.getSalary());
         }
         if (updatedStaff.getHomeAddress() != null)
             existingStaff.setHomeAddress(updatedStaff.getHomeAddress());
 
-
+        if(updatedStaff.getRestaurant() != null){
+            existingStaff.setRestaurant(updatedStaff.getRestaurant());
+        }
         return staffRepository.save(existingStaff);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
+
+        staffRepository.findById(id).orElseThrow(()->
+                new StaffNotFoundException("Сотрудника с ID:" +id + " невозможно удалить."));
+
         staffRepository.deleteById(id);
+    }
+
+    public List<Staff> getStaffsByName(String name){
+        return staffRepository.findByName(name);
     }
 
 
